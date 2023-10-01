@@ -1,4 +1,10 @@
 terraform {
+
+  backend "s3" {
+    bucket = "card-website-terraform-project1"
+    key    = "path/terraform.tfstate"
+    region = "ap-south-1"
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -12,20 +18,7 @@ provider "aws" {
   region = "ap-south-1"
 }
 
-# resource "aws_instance" "demo_instance" {
-#   ami           = "ami-0f5ee92e2d63afc18"
-#   instance_type = "t2.micro"
-#   key_name = "ansible_key"
 
-#   tags = {
-#     Name = "demo_instance"
-#   }
-# }
-
-# # #eip
-# resource "aws_eip" "lb" {
-#    instance = aws_instance.demo_instance.id
-#  }
 
 #Creating the new infrastructure
 resource "aws_vpc" "project_vpc_mumbai" {
@@ -89,33 +82,7 @@ resource "aws_subnet" "subnet_1b_private" {
   }
 }
 
-#instance
 
-# #instance 
-
-# resource "aws_instance" "public-1a" {
-#   ami           = "ami-0b59d54972a4a4ade"
-#   instance_type = "t2.micro"
-#   key_name = aws_key_pair.mumbai_keys.id
-#   subnet_id = aws_subnet.subnet_1a_public.id
-#   vpc_security_group_ids = [aws_security_group.allow_ssh_http.id]
-
-#   tags = {
-#     Name = "Webserver-1a_public"
-#   }
-# }
-
-# resource "aws_instance" "public-1b" {
-#   ami           = "ami-0b59d54972a4a4ade"
-#   instance_type = "t2.micro"
-#   key_name = aws_key_pair.mumbai_keys.id
-#   subnet_id = aws_subnet.subnet_1b_public.id
-#   vpc_security_group_ids = [aws_security_group.allow_ssh_http.id]
-
-#   tags = {
-#     Name = "Webserver-1b_public"
-#   }
-# }
 
 #key_pair
 
@@ -219,54 +186,6 @@ resource "aws_route_table_association" "RT_asso_1b_private" {
   route_table_id = aws_route_table.mumbai_RT_Private.id
 }
 
-# #target group 
-
-# resource "aws_lb_target_group" "card-website-TG-terraform" {
-#   name     = "card-website-TG-terraform"
-#   port     = 80
-#   protocol = "HTTP"
-#   vpc_id   = aws_vpc.project_vpc_mumbai.id
-# }
-
-
-# resource "aws_lb_target_group_attachment" "TG-instance-1" {
-#   target_group_arn = aws_lb_target_group.card-website-TG-terraform.arn
-#   target_id        = aws_instance.public-1a.id
-#   port             = 80
-# }
-
-# resource "aws_lb_target_group_attachment" "TG-instance-2" {
-#   target_group_arn = aws_lb_target_group.card-website-TG-terraform.arn
-#   target_id        = aws_instance.public-1b.id
-#   port             = 80
-# }
-
-# #LB 
-
-# resource "aws_lb" "card-website-LB-terraform" {
-#   name               = "card-website-LB-terraform"
-#   internal           = false
-#   load_balancer_type = "application"
-#   security_groups    = [aws_security_group.allow_ssh_http.id]
-#   subnets            = [aws_subnet.subnet_1a_private.id, aws_subnet.subnet_1b_private.id]
-
-
-#   tags = {
-#     Environment = "production"
-#   }
-# }
-
-
-# resource "aws_lb_listener" "card-website-listener" {
-#   load_balancer_arn = aws_lb.card-website-LB-terraform.arn
-#   port              = "80"
-#   protocol          = "HTTP"
-  
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_lb_target_group.card-website-TG-terraform.arn
-#   }
-# }
 
 #creating the instances via ASG and  we will attach the LB to it
 
