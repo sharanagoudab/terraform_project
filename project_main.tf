@@ -15,7 +15,7 @@ terraform {
 
 # Configure the AWS Provider
 provider "aws" {
-  region = "ap-south-1"
+  region = var.region    #"ap-south-1"
 }
 
 
@@ -37,7 +37,7 @@ resource "aws_vpc" "project_vpc_mumbai" {
 resource "aws_subnet" "subnet_1a_public" {
   vpc_id     = aws_vpc.project_vpc_mumbai.id
   cidr_block = "10.10.0.0/24"
-  availability_zone = "ap-south-1a"
+  availability_zone = var.subnet_a1_availability_zone   #"ap-south-1a"
   map_public_ip_on_launch = "true"
 
   tags = {
@@ -49,7 +49,7 @@ resource "aws_subnet" "subnet_1a_public" {
 resource "aws_subnet" "subnet_1a_private" {
   vpc_id     = aws_vpc.project_vpc_mumbai.id
   cidr_block = "10.10.1.0/24"
-  availability_zone = "ap-south-1a"
+  availability_zone = var.subnet_a1_availability_zone    #"ap-south-1a"
   map_public_ip_on_launch = "true"
 
   tags = {
@@ -62,7 +62,7 @@ resource "aws_subnet" "subnet_1a_private" {
 resource "aws_subnet" "subnet_1b_public" {
   vpc_id     = aws_vpc.project_vpc_mumbai.id
   cidr_block = "10.10.2.0/24"
-  availability_zone = "ap-south-1b"
+  availability_zone = var.subnet_b1_availability_zone     #"ap-south-1b"
   map_public_ip_on_launch = "true"
 
   tags = {
@@ -74,7 +74,7 @@ resource "aws_subnet" "subnet_1b_public" {
 resource "aws_subnet" "subnet_1b_private" {
   vpc_id     = aws_vpc.project_vpc_mumbai.id
   cidr_block = "10.10.3.0/24"
-  availability_zone = "ap-south-1b"
+  availability_zone = var.subnet_b1_availability_zone  #"ap-south-1b"
   map_public_ip_on_launch = "true"
 
   tags = {
@@ -88,7 +88,7 @@ resource "aws_subnet" "subnet_1b_private" {
 
 resource "aws_key_pair" "mumbai_keys" {
   key_name   = "public_key"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCmn19YCgYbSEl6wXgV1gvGR9s8n0cVTjS8X2lnnJ92Z/aoRgeUO5zRrpk0nqqmo5Gj0rqSBDm3qc+4luCElRM8y4uQhQ2QW36HMR1lr5p0JLsT9tQNBbuFlZUml4ewicMmkHeaEV2cE6GpdN2/pm7zjdWqZz6O1Rnmy6OvZshzAtppyRoo6mpKDcKkK+77QuUjU3x7jfLpLO5zONerqrBXD5Vtv2XRv++AR430uuyK6Cbdbw7kNMRroLtqy6LJ7CzgxzrbZZr2R00hy16zaeciCMSUsd3eXDs6PoEn6rszQVcE4HlaXzxvh7TFTT3iwHhygnOmqMj4+zRrLSK+uaiuW7ao1UuIiolTPTHZ0whkxUYZcIBKY2rnsQo9q3US1f5TpScDUPIxzDFBruBo7kRtW0VajqpTnH3OTFEeNyRFPxfnlPmsLfvDgc6fXzwRO4obrmPUMSUtTVC9T5H99jPzG7qaI5FCeO964gvHUFF38vTJf6jLaIXm1XYIslFnVek= sharanagouda@DESKTOP-B81EITH"
+  public_key = var.public_key #"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCmn19YCgYbSEl6wXgV1gvGR9s8n0cVTjS8X2lnnJ92Z/aoRgeUO5zRrpk0nqqmo5Gj0rqSBDm3qc+4luCElRM8y4uQhQ2QW36HMR1lr5p0JLsT9tQNBbuFlZUml4ewicMmkHeaEV2cE6GpdN2/pm7zjdWqZz6O1Rnmy6OvZshzAtppyRoo6mpKDcKkK+77QuUjU3x7jfLpLO5zONerqrBXD5Vtv2XRv++AR430uuyK6Cbdbw7kNMRroLtqy6LJ7CzgxzrbZZr2R00hy16zaeciCMSUsd3eXDs6PoEn6rszQVcE4HlaXzxvh7TFTT3iwHhygnOmqMj4+zRrLSK+uaiuW7ao1UuIiolTPTHZ0whkxUYZcIBKY2rnsQo9q3US1f5TpScDUPIxzDFBruBo7kRtW0VajqpTnH3OTFEeNyRFPxfnlPmsLfvDgc6fXzwRO4obrmPUMSUtTVC9T5H99jPzG7qaI5FCeO964gvHUFF38vTJf6jLaIXm1XYIslFnVek= sharanagouda@DESKTOP-B81EITH"
 }
 
 #security group
@@ -191,8 +191,8 @@ resource "aws_route_table_association" "RT_asso_1b_private" {
 
 resource "aws_launch_template" "LT-template-demo-terraform" {
   name = "LT-demo-terraform"
-  image_id = "ami-0f5ee92e2d63afc18"
-  instance_type = "t2.micro"
+  image_id = var.launch-template-image_id           #"ami-0f5ee92e2d63afc18"  
+  instance_type = var.instance_type                 #"t2.micro"
   key_name = aws_key_pair.mumbai_keys.id
   vpc_security_group_ids = [aws_security_group.allow_ssh_http.id]
   user_data = filebase64("example.sh")
